@@ -14,7 +14,7 @@ public class Locato extends JavaPlugin {
     static FileConfiguration fc;
     static Boolean debug;
     static String storage;
-    static ArrayList<ZLocation> zLocations;
+    public static ArrayList<ZLocation> zLocations;
 
     @Override
     public void onEnable() {
