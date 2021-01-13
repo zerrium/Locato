@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Locato extends JavaPlugin {
     private Connection connection;
@@ -18,8 +19,9 @@ public class Locato extends JavaPlugin {
     @Override
     public void onEnable() {
         System.out.println(ChatColor.YELLOW+"[Locato] v0.1 by zerrium");
-        //getServer().getPluginManager().registerEvents(new SpigotListener(), this);
-        //Objects.requireNonNull(this.getCommand("zstats")).setExecutor(new ZUpdater());
+        Objects.requireNonNull(this.getCommand("locato")).setExecutor(new zerrium.Commands.Locato());
+        Objects.requireNonNull(this.getCommand("whereis")).setExecutor(new zerrium.Commands.Whereis());
+        Objects.requireNonNull(this.getCommand("shareloc")).setExecutor(new zerrium.Commands.ShareLoc());
         System.out.println(ChatColor.YELLOW+"[Locato] Connecting to database...");
         this.saveDefaultConfig(); //get config file
         fc = this.getConfig();

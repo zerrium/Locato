@@ -6,17 +6,12 @@ author: zerrium
 commands:
   locato:
     description: Locato commands
-    usage: /locato <add/edit/remove> <place_name>
-    permission: Locato.admin
+    usage: /locato <add/edit/remove/search/status> <place_name>
   whereis:
-    description: Locate where a saved specified place is
+    description: Locate where a saved specified place is in coordinate
     usage: /whereis <place_name>
     permission: Locato.whereis
   shareloc:
-    description: Share player's current position
-    usage: /shareloc
+    description: Share player's current coordinate and dimension, if no player_destination specified, will broadcast to all players
+    usage: /shareloc <player_destination>
     permission: Locato.shareloc
-  status:
-    description: Check whether a saved specified place has players in it
-    usage: /status <place_name>
-    permission: Locato.status
