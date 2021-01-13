@@ -1,0 +1,14 @@
+#Storage Type: Choose MySQL or SQLite
+#storage_type: 'MySQL' #uncomment this line and comment the next line to enable MySQL
+storage_type: 'SQLite'
+
+#Database Config (MySQL, if enabled)
+hostname: 'localhost'
+port: 3306
+database: 'Locato'
+username: 'root'
+password: '' #leave it blank if you don't have password
+use_SSL: false
+
+#Others
+use_debug: false

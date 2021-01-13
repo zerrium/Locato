@@ -1,0 +1,22 @@
+name: Locato
+version: 0.1
+main: zerrium.Locato
+api-version: 1.13
+author: zerrium
+commands:
+  locato:
+    description: Locato commands
+    usage: /locato <add/edit/remove> <place_name>
+    permission: Locato.admin
+  whereis:
+    description: Locate where a saved specified place is
+    usage: /whereis <place_name>
+    permission: Locato.whereis
+  shareloc:
+    description: Share player's current position
+    usage: /shareloc
+    permission: Locato.shareloc
+  status:
+    description: Check whether a saved specified place has players in it
+    usage: /status <place_name>
+    permission: Locato.status
