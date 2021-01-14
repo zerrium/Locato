@@ -1,9 +1,12 @@
 package zerrium.Commands;
 
-import org.bukkit.ChatColor;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import zerrium.ZLocation;
 
@@ -17,7 +20,7 @@ public class Locato implements CommandExecutor {
         cs = sender;
         final String msg = ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "usage:\n" +
                 "/locato <remove/status> <place_name>\n" +
-                "/locato <add/edit> <place_name> (optional for add: <chunk1 pos x> <chunk1 pos y> <chunk1 pos z> <chunk2 pos x> <chunk2 pos y> <chunk2 pos z> <dimension>)" +
+                "/locato <add/edit> <place_name> (optional for add: <chunk1 pos x> <chunk1 pos y> <chunk1 pos z> <chunk2 pos x> <chunk2 pos y> <chunk2 pos z> <dimension: NORMAL or NETHER or THE_END>)" +
                 "/locato <search> <keyword>";
         switch(args.length){
             case 2:
@@ -29,10 +32,10 @@ public class Locato implements CommandExecutor {
                         doRemove();
                         return true;
                     case "search":
-                        doSearch(args[1]);
+                        doSearch(args[1].toLowerCase());
                         return true;
                     case "status":
-                        doStatus();
+                        doStatus(args[1].toLowerCase());
                         return true;
                     default:
                         sender.sendMessage(msg);
@@ -81,8 +84,54 @@ public class Locato implements CommandExecutor {
         r.runTaskAsynchronously(zerrium.Locato.getPlugin(zerrium.Locato.class));
     }
 
-    private void doStatus(){
+    private void doStatus(String place){
+        BukkitRunnable r = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(!cs.hasPermission("Locato.status")){
+                    cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Sorry you do not have permission to perform this command. Ask your admin for more info.");
+                    return;
+                }
+                int index = zerrium.Locato.zLocations.indexOf(new ZLocation(place));
+                if(index == -1){
+                    cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "No registered places found with \"" + place + "\" name.");
+                }else{
+                    ZLocation zl = zerrium.Locato.zLocations.get(index);
+                    int[] chunk1 = zl.getChunk1().getCoord();
+                    int[] chunk2 = zl.getChunk2().getCoord();
+                    World w = Bukkit.getWorld(zl.getDimension());
+                    ArrayList<Player> p = new ArrayList<>();
 
+                    for(int i=Math.min(chunk1[0], chunk2[0]); i<=Math.max(chunk1[0], chunk2[0]); i++){
+                        for(int j=Math.min(chunk1[1], chunk2[1]); j<=Math.max(chunk1[1], chunk2[1]); j++){
+                            Chunk c = w.getChunkAt(i, j);
+                            for(Entity e:c.getEntities()){
+                                if(e.getType() == EntityType.PLAYER){
+                                    Player temp = Bukkit.getPlayer(e.getUniqueId());
+                                    int y = (int) temp.getLocation().getY();
+                                    if(zerrium.Locato.debug) System.out.println("Found a player with uuid of " + temp.getUniqueId() + ", name: " + temp.getDisplayName());
+                                    if((Math.min(chunk1[2], chunk2[2])-2) <= y && (Math.max(chunk1[2], chunk2[2])+2) >= y) p.add(temp);
+                                }
+                            }
+                        }
+                    }
+
+                    if(p.isEmpty()){
+                        cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "No one is at " + place + ".");
+                    }else{
+                        StringBuilder result = new StringBuilder();
+                        int i;
+                        for(i=0; i<p.size(); i++){
+                            p.get(i).sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + (cs instanceof Player ? ((Player) cs).getDisplayName() : "Server admin") + " checked this place status.");
+                            result.append(p.get(i).getDisplayName()).append(i != (p.size()-1) ? ", " : ".");
+                        }
+                        cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "There are " + i + " player(s) at " + place + ":");
+                        cs.sendMessage(result.toString());
+                    }
+                }
+            }
+        };
+        r.runTaskAsynchronously(zerrium.Locato.getPlugin(zerrium.Locato.class));
     }
 
     private void doRemove(){

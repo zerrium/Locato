@@ -12,8 +12,8 @@ import java.util.Objects;
 public class Locato extends JavaPlugin {
     private Connection connection;
     static FileConfiguration fc;
-    static Boolean debug;
-    static String storage;
+    public static Boolean debug;
+    public static String storage;
     public static ArrayList<ZLocation> zLocations;
 
     @Override
