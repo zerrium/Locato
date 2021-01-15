@@ -52,11 +52,11 @@ public class SqlCon {
 
     private SqlCon() {}
 
-    protected static Connection openConnection() throws SQLException {
+    public static Connection openConnection() throws SQLException {
         return ds.getConnection();
     }
 
-    protected static void closeConnection(){
+    public static void closeConnection(){
         ds.close();
     }
 }

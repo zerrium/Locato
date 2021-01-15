@@ -8,8 +8,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import zerrium.SqlCon;
 import zerrium.ZLocation;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Locato implements CommandExecutor {
@@ -29,7 +33,7 @@ public class Locato implements CommandExecutor {
                         doAdd();
                         return true;
                     case "remove":
-                        doRemove();
+                        doRemove(args[1].toLowerCase());
                         return true;
                     case "search":
                         doSearch(args[1].toLowerCase());
@@ -134,8 +138,47 @@ public class Locato implements CommandExecutor {
         r.runTaskAsynchronously(zerrium.Locato.getPlugin(zerrium.Locato.class));
     }
 
-    private void doRemove(){
+    private void doRemove(String place){
+        BukkitRunnable r = new BukkitRunnable() { //asynchronous because it might disturb main thread performance if the player is doing enormous search
+            @Override
+            public void run() {
+                if(!cs.hasPermission("Locato.delete")){
+                    cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Sorry you do not have permission to perform this command. Ask your admin for more info.");
+                    return;
+                }
+                int index = zerrium.Locato.zLocations.indexOf(new ZLocation(place));
+                if(index == -1){
+                    cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "No registered places found with \"" + place + "\" name.");
+                }else{
+                    System.out.println(ChatColor.YELLOW + "[Locato]" + ChatColor.RESET + " Deleting place: " + place + " from database...");
+                    PreparedStatement pss = null;
+                    Connection con = null;
+                    try {
+                        con = SqlCon.openConnection();
+                        pss = con.prepareStatement("delete from locato where place_id=?");
+                        pss.setString(1, place);
+                        int row = pss.executeUpdate();
+                        System.out.println(ChatColor.YELLOW + "[Locato]" + ChatColor.RESET +
+                                (row > 0 ? " Deleted place: " + place + " from database." : " No place of " + place + " found on the database. No rows affected."));
+                        zerrium.Locato.zLocations.remove(index);
+                        cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Deleted place: \"" + place + "\" from database record.");
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                        cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Failed to delete place: \"" + place + "\" from database record. Check server console for more info.");
+                    }finally {
+                        try {
+                            assert pss != null;
+                            pss.close();
+                            con.close();
+                        } catch (SQLException throwables) {
+                            if(zerrium.Locato.debug) throwables.printStackTrace();
+                        }
+                    }
 
+                }
+            }
+        };
+        r.runTaskAsynchronously(zerrium.Locato.getPlugin(zerrium.Locato.class));
     }
 
     private void doAdd(){
