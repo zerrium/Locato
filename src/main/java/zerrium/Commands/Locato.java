@@ -212,6 +212,7 @@ public class Locato implements CommandExecutor {
             pss.executeUpdate();
             System.out.println(ChatColor.YELLOW + "[Locato]" + ChatColor.RESET + " Added place: " + place + " to the database.");
             zerrium.Locato.zLocations.add(new ZLocation(place, dimension, new ZChunk(chunk1_x, chunk1_z, elevation1), new ZChunk(chunk2_x, chunk2_z, elevation2)));
+            hm.remove(place);
             cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Added place: \"" + place + "\" to database record.");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
