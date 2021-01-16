@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
-public class ShareLoc implements CommandExecutor {
+public class LocatoShareLoc implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player){

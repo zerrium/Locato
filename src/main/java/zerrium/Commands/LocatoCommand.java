@@ -8,9 +8,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import zerrium.SqlCon;
-import zerrium.ZChunk;
-import zerrium.ZLocation;
+import zerrium.LocatoSqlCon;
+import zerrium.LocatoZChunk;
+import zerrium.LocatoZLocation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class Locato implements CommandExecutor {
+public class LocatoCommand implements CommandExecutor {
     private CommandSender cs;
     private final HashMap<String, Location> hm = new HashMap<>();
     private static final String no_perm = "[Locato] " + ChatColor.RESET + "Sorry you do not have permission to perform this command. Ask your admin for more info.";
@@ -70,12 +70,12 @@ public class Locato implements CommandExecutor {
         BukkitRunnable r = new BukkitRunnable() { //asynchronous because it might disturb main thread performance if the player is doing enormous search
             @Override
             public void run() {
-                if(!cs.hasPermission("Locato.search")){
+                if(!cs.hasPermission("locato.search")){
                     cs.sendMessage(ChatColor.GOLD + no_perm);
                     return;
                 }
                 ArrayList<String> result = new ArrayList<>();
-                for(ZLocation zl :zerrium.Locato.zLocations){
+                for(LocatoZLocation zl :zerrium.Locato.zLocations){
                     if(zl.getPlaceId().contains(keyword)) result.add(zl.getPlaceId());
                 }
                 if(result.isEmpty()){
@@ -97,15 +97,15 @@ public class Locato implements CommandExecutor {
         BukkitRunnable r = new BukkitRunnable() {
             @Override
             public void run() {
-                if(!cs.hasPermission("Locato.status")){
+                if(!cs.hasPermission("locato.status")){
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + no_perm);
                     return;
                 }
-                int index = zerrium.Locato.zLocations.indexOf(new ZLocation(place));
+                int index = zerrium.Locato.zLocations.indexOf(new LocatoZLocation(place));
                 if(index == -1){
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "No registered places found with \"" + place + "\" name.");
                 }else{
-                    ZLocation zl = zerrium.Locato.zLocations.get(index);
+                    LocatoZLocation zl = zerrium.Locato.zLocations.get(index);
                     int[] chunk1 = zl.getChunk1().getCoord();
                     int[] chunk2 = zl.getChunk2().getCoord();
                     World w = Bukkit.getWorld(zl.getDimension());
@@ -149,11 +149,11 @@ public class Locato implements CommandExecutor {
         BukkitRunnable r = new BukkitRunnable() { //asynchronous because it might disturb main thread performance if the player is doing enormous search
             @Override
             public void run() {
-                if(!cs.hasPermission("Locato.delete")){
+                if(!cs.hasPermission("locato.delete")){
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + no_perm);
                     return;
                 }
-                int index = zerrium.Locato.zLocations.indexOf(new ZLocation(place));
+                int index = zerrium.Locato.zLocations.indexOf(new LocatoZLocation(place));
                 if(index == -1){
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "No registered places found with \"" + place + "\" name.");
                 }else{
@@ -173,12 +173,12 @@ public class Locato implements CommandExecutor {
                             "/locato <add> <place_name> <chunk1 pos x> <chunk1 pos y> <chunk1 pos z> <chunk2 pos x> <chunk2 pos y> <chunk2 pos z> <dimension: NORMAL or NETHER or THE_END>");
                     return;
                 }
-                if(!cs.hasPermission("Locato.add")){
+                if(!cs.hasPermission("locato.add")){
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + no_perm);
                     return;
                 }
                 if(hm.get(place) == null){
-                    if(zerrium.Locato.zLocations.contains(new ZLocation(place))){
+                    if(zerrium.Locato.zLocations.contains(new LocatoZLocation(place))){
                         cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Place of \"" + place + "\" is already recorded on database. Try again using another name!");
                     }else{
                         hm.put(place, ((Player) cs).getLocation());
@@ -219,10 +219,10 @@ public class Locato implements CommandExecutor {
                 }
                 String place = args[1];
                 String dimension = args[8];
-                if(add_edit.equals("add") && !cs.hasPermission("Locato.add")){
+                if(add_edit.equals("add") && !cs.hasPermission("locato.add")){
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + no_perm);
                     return;
-                }else if(add_edit.equals("edit") && !cs.hasPermission("Locato.edit")){
+                }else if(add_edit.equals("edit") && !cs.hasPermission("locato.edit")){
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + no_perm);
                     return;
                 }
@@ -237,7 +237,7 @@ public class Locato implements CommandExecutor {
         PreparedStatement pss = null;
         Connection con = null;
         try {
-            con = SqlCon.openConnection();
+            con = LocatoSqlCon.openConnection();
             pss = con.prepareStatement((add_edit.equals("add") ?
                     "insert into locato(dimension, chunk1_x, chunk1_z, elevation1, chunk2_x, chunk2_z, elevation2, place_id) values (?, ?, ?, ?, ?, ?, ?, ?)" :
                     "update locato set dimension=?, chunk1_x=?, chunk1_z=?, elevation1=?, chunk2_x=?, chunk2_z=?, elevation2=? where place_id=?"));
@@ -253,9 +253,9 @@ public class Locato implements CommandExecutor {
             if(add_edit.equals("add")){
                 hm.remove(place);
             }else{
-                zerrium.Locato.zLocations.remove(new ZLocation(place));
+                zerrium.Locato.zLocations.remove(new LocatoZLocation(place));
             }
-            zerrium.Locato.zLocations.add(new ZLocation(place, dimension, new ZChunk(chunk1_x, chunk1_z, elevation1), new ZChunk(chunk2_x, chunk2_z, elevation2)));
+            zerrium.Locato.zLocations.add(new LocatoZLocation(place, dimension, new LocatoZChunk(chunk1_x, chunk1_z, elevation1), new LocatoZChunk(chunk2_x, chunk2_z, elevation2)));
             final String m = "[Locato] " + ChatColor.RESET + (add_edit.equals("add") ? "Added" : "Edited") + " place: \"" + place + "\" to database record.";
             System.out.println(ChatColor.YELLOW + m);
             cs.sendMessage(ChatColor.GOLD + m);
@@ -278,7 +278,7 @@ public class Locato implements CommandExecutor {
         PreparedStatement pss = null;
         Connection con = null;
         try {
-            con = SqlCon.openConnection();
+            con = LocatoSqlCon.openConnection();
             pss = con.prepareStatement("delete from locato where place_id=?");
             pss.setString(1, place);
             int row = pss.executeUpdate();

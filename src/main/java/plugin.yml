@@ -1,5 +1,5 @@
 name: Locato
-version: 1.0
+version: 1.1
 main: zerrium.Locato
 api-version: 1.13
 author: zerrium
@@ -10,8 +10,8 @@ commands:
   whereis:
     description: Locate where a saved specified place is in coordinate
     usage: /whereis <place_name>
-    permission: Locato.whereis
+    permission: locato.whereis
   shareloc:
     description: Share player's current coordinate and dimension, if no player_destination specified, will broadcast to all players
     usage: /shareloc [player_destination]
-    permission: Locato.shareloc
+    permission: locato.shareloc

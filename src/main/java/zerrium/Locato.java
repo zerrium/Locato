@@ -6,28 +6,28 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import zerrium.Commands.LocatoCommand;
+import zerrium.Commands.LocatoShareLoc;
+import zerrium.Commands.LocatoWhereis;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Locato extends JavaPlugin {
     private Connection connection;
     static FileConfiguration fc;
     public static Boolean debug;
     public static String storage;
-    public static ArrayList<ZLocation> zLocations;
+    public static ArrayList<LocatoZLocation> zLocations;
 
     @Override
     public void onEnable() {
-        System.out.println(ChatColor.YELLOW+"[Locato] v1.0 by zerrium");
-        Objects.requireNonNull(this.getCommand("locato")).setExecutor(new zerrium.Commands.Locato());
+        System.out.println(ChatColor.YELLOW+"[Locato] v1.1 by zerrium");
+        Objects.requireNonNull(this.getCommand("locato")).setExecutor(new LocatoCommand());
         Objects.requireNonNull(getCommand("locato")).setTabCompleter(this);
-        Objects.requireNonNull(this.getCommand("whereis")).setExecutor(new zerrium.Commands.Whereis());
+        Objects.requireNonNull(this.getCommand("whereis")).setExecutor(new LocatoWhereis());
         Objects.requireNonNull(getCommand("whereis")).setTabCompleter(this);
-        Objects.requireNonNull(this.getCommand("shareloc")).setExecutor(new zerrium.Commands.ShareLoc());
+        Objects.requireNonNull(this.getCommand("shareloc")).setExecutor(new LocatoShareLoc());
         Objects.requireNonNull(getCommand("shareloc")).setTabCompleter(this);
         System.out.println(ChatColor.YELLOW+"[Locato] Connecting to database...");
         this.saveDefaultConfig(); //get config file
@@ -38,7 +38,7 @@ public class Locato extends JavaPlugin {
 
         //Database connect
         try{
-            connection = SqlCon.openConnection();
+            connection = LocatoSqlCon.openConnection();
         } catch (SQLException throwables) {
             System.out.println(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" Unable to connect to database:");
             throwables.printStackTrace();
@@ -68,9 +68,9 @@ public class Locato extends JavaPlugin {
             System.out.println(ChatColor.YELLOW+"[Locato] Getting places list from database...");
             int c = 0;
             while(rss.next()){
-                zLocations.add(new ZLocation(rss.getString("place_id"), rss.getString("dimension"),
-                        new ZChunk(rss.getInt("chunk1_x"), rss.getInt("chunk1_z"), rss.getInt("elevation1")),
-                        new ZChunk(rss.getInt("chunk2_x"), rss.getInt("chunk2_z"), rss.getInt("elevation2"))));
+                zLocations.add(new LocatoZLocation(rss.getString("place_id"), rss.getString("dimension"),
+                        new LocatoZChunk(rss.getInt("chunk1_x"), rss.getInt("chunk1_z"), rss.getInt("elevation1")),
+                        new LocatoZChunk(rss.getInt("chunk2_x"), rss.getInt("chunk2_z"), rss.getInt("elevation2"))));
                 if(debug){
                     System.out.println(zLocations.get(c).getPlaceId());
                 }
@@ -102,14 +102,14 @@ public class Locato extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        SqlCon.closeConnection();
+        LocatoSqlCon.closeConnection();
         System.out.println(ChatColor.YELLOW+"[Locato] Disabling plugin...");
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        ArrayList<String> locations = new ArrayList<String>();
-        for (ZLocation location: zLocations) {
+        ArrayList<String> locations = new ArrayList<>();
+        for (LocatoZLocation location: zLocations) {
             locations.add(location.getPlaceId());
         }
 
@@ -117,7 +117,7 @@ public class Locato extends JavaPlugin {
             if(args.length == 1)
                 return Arrays.asList("add", "edit", "remove", "search", "status");
             if(args.length == 2 && args[0].equals("add") || args[0].equals("search") )
-                return Arrays.asList();
+                return Collections.emptyList();
             if(args.length == 2 && (args[0].equals("edit") || args[0].equals("remove") || args[0].equals("status")))
                 return locations;
         }
@@ -127,6 +127,6 @@ public class Locato extends JavaPlugin {
         if(args.length < 2 && command.getName().equals("shareloc")) {
             return null;
         }
-        return Arrays.asList();
+        return Collections.emptyList();
     }
 }
