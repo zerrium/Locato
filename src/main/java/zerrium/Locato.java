@@ -18,7 +18,7 @@ public class Locato extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println(ChatColor.YELLOW+"[Locato] v0.1 by zerrium");
+        System.out.println(ChatColor.YELLOW+"[Locato] v1.0 by zerrium");
         Objects.requireNonNull(this.getCommand("locato")).setExecutor(new zerrium.Commands.Locato());
         Objects.requireNonNull(this.getCommand("whereis")).setExecutor(new zerrium.Commands.Whereis());
         Objects.requireNonNull(this.getCommand("shareloc")).setExecutor(new zerrium.Commands.ShareLoc());

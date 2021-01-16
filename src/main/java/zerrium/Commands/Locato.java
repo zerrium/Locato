@@ -29,8 +29,8 @@ public class Locato implements CommandExecutor {
         cs = sender;
         final String msg = ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "usage:\n" +
                 "/locato <remove/status> <place_name>\n" +
-                "/locato <add/edit> <place_name> (optional for add and player: <chunk1 pos x> <chunk1 pos y> <chunk1 pos z> <chunk2 pos x> <chunk2 pos y> <chunk2 pos z> <dimension: world or world_nether or world_the_end>)" +
-                "/locato <search> <keyword>";
+                "/locato <add/edit> <place_name> (optional for add and player: <chunk1 pos x> <chunk1 pos y> <chunk1 pos z> <chunk2 pos x> <chunk2 pos y> <chunk2 pos z> <dimension: world or world_nether or world_the_end>)\n" +
+                "/locato <search> <keyword>\n";
         switch(args.length){
             case 2:
                 switch(args[0].toLowerCase()){
@@ -212,6 +212,9 @@ public class Locato implements CommandExecutor {
                     chunk2_z = Integer.parseInt(args[7]);
                 } catch (NumberFormatException e) {
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Arguments for <chunk1 pos x> <chunk1 pos y> <chunk1 pos z> <chunk2 pos x> <chunk2 pos y> <chunk2 pos z> must be numbers!");
+                    return;
+                } catch (ArrayIndexOutOfBoundsException e){
+                    if(zerrium.Locato.debug) e.printStackTrace();
                     return;
                 }
                 String place = args[1];
