@@ -27,6 +27,7 @@ public class Locato extends JavaPlugin {
         fc = this.getConfig();
         debug = fc.getBoolean("use_debug");
         storage = Objects.requireNonNull(fc.getString("storage_type")).toLowerCase();
+        zLocations = new ArrayList<>();
 
         //Database connect
         try{
@@ -43,7 +44,7 @@ public class Locato extends JavaPlugin {
         ResultSet rss = null;
         try {
             st = connection.createStatement();
-            rs = st.executeQuery(storage.equals("SQLite") ? "SELECT name FROM sqlite_master WHERE type='table'" : "show tables");
+            rs = st.executeQuery(storage.equals("sqlite") ? "SELECT name FROM sqlite_master WHERE type='table'" : "show tables");
             if(!rs.next()){
                 st.executeUpdate("create table locato(" +
                         "    place_id varchar(30) not null," +
