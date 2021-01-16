@@ -29,7 +29,7 @@ public class Locato implements CommandExecutor {
         cs = sender;
         final String msg = ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "usage:\n" +
                 "/locato <remove/status> <place_name>\n" +
-                "/locato <add/edit> <place_name> (optional for add and player: <chunk1 pos x> <chunk1 pos y> <chunk1 pos z> <chunk2 pos x> <chunk2 pos y> <chunk2 pos z> <dimension: NORMAL or NETHER or THE_END>)" +
+                "/locato <add/edit> <place_name> (optional for add and player: <chunk1 pos x> <chunk1 pos y> <chunk1 pos z> <chunk2 pos x> <chunk2 pos y> <chunk2 pos z> <dimension: world or world_nether or world_the_end>)" +
                 "/locato <search> <keyword>";
         switch(args.length){
             case 2:
@@ -187,11 +187,11 @@ public class Locato implements CommandExecutor {
                 }else{
                     Location lo1 = hm.get(place);
                     Location lo2 = ((Player) cs).getLocation();
-                    if(Objects.requireNonNull(lo1.getWorld()).getEnvironment() != Objects.requireNonNull(lo2.getWorld()).getEnvironment()){
+                    if(Objects.requireNonNull(lo1.getWorld()).getName().equals(Objects.requireNonNull(lo2.getWorld()).getName())){
                         cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "The location must be on the same dimension!");
                         return;
                     }
-                    SQL_add_edit("add", place, Objects.requireNonNull(lo1.getWorld()).getEnvironment().toString(), lo1.getChunk().getX(), lo1.getChunk().getZ(), (int) lo1.getY(), lo2.getChunk().getX(), lo2.getChunk().getZ(), (int) lo2.getY());
+                    SQL_add_edit("add", place, Objects.requireNonNull(lo1.getWorld()).getName(), lo1.getChunk().getX(), lo1.getChunk().getZ(), (int) lo1.getY(), lo2.getChunk().getX(), lo2.getChunk().getZ(), (int) lo2.getY());
                 }
             }
         };
