@@ -5,6 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -27,6 +29,16 @@ public class Locato extends JavaPlugin {
         fc = this.getConfig();
         debug = fc.getBoolean("use_debug");
         storage = Objects.requireNonNull(fc.getString("storage_type")).toLowerCase();
+
+        if(storage.equals("SQLite")){
+            File yourFile = new File(getDataFolder()+"locato.db");
+            try {
+                boolean newfile = yourFile.createNewFile();
+                if(debug && newfile) System.out.println(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" New file locato.db created");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         //Database connect
         try{

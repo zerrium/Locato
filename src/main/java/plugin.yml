@@ -13,5 +13,5 @@ commands:
     permission: Locato.whereis
   shareloc:
     description: Share player's current coordinate and dimension, if no player_destination specified, will broadcast to all players
-    usage: /shareloc <player_destination>
+    usage: /shareloc [player_destination]
     permission: Locato.shareloc
