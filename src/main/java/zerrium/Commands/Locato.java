@@ -232,7 +232,7 @@ public class Locato implements CommandExecutor {
         try {
             con = SqlCon.openConnection();
             pss = con.prepareStatement((add_edit.equals("add") ?
-                    "insert into locato(dimension, chunk1_x, chunk1_z, elevation1, chunk2_x, chunk2_z, elevation2, place_id) values (?, ?, ?, ?, ?, ?, ?, ?" :
+                    "insert into locato(dimension, chunk1_x, chunk1_z, elevation1, chunk2_x, chunk2_z, elevation2, place_id) values (?, ?, ?, ?, ?, ?, ?, ?)" :
                     "update locato set dimension=?, chunk1_x=?, chunk1_z=?, elevation1=?, chunk2_x=?, chunk2_z=?, elevation2=? where place_id=?"));
             pss.setString(1, dimension);
             pss.setInt(2, chunk1_x);

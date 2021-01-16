@@ -28,13 +28,13 @@ public class ShareLoc implements CommandExecutor {
                     sender.sendMessage(ChatColor.GOLD+"[Locato] " + "Player " + args[0] + " is not found or offline.");
                 }else{
                     sender.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "You shared your current location to " + p2.getDisplayName() + ": " + c);
-                    p2.sendMessage(a + "to you.");
+                    p2.sendMessage(a + " to you.");
                     p2.sendMessage(b + c);
                 }
             }
             return true;
         }else{
-            sender.sendMessage(ChatColor.GOLD+"[Locato]" + ChatColor.RESET + "You must be a player to execute this command!");
+            sender.sendMessage(ChatColor.GOLD+"[Locato]" + ChatColor.RESET + " You must be a player to execute this command!");
         }
         return false;
     }

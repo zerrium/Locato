@@ -25,7 +25,7 @@ public class Whereis implements CommandExecutor {
                 public void run() {
                     int index = Locato.zLocations.indexOf(new ZLocation(args[0].toLowerCase()));
                     if(index == -1){
-                        sender.sendMessage(ChatColor.GOLD+"[Locato]" + ChatColor.RESET + args[0] + " is not found on the server record.");
+                        sender.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + args[0] + " is not found on the server record.");
                     }else{
                         ZLocation zl = Locato.zLocations.get(index);
                         int[] chunk1 = zl.getChunk1().getCoord();
