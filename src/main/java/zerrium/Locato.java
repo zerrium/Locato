@@ -5,8 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -45,7 +43,7 @@ public class Locato extends JavaPlugin {
         ResultSet rss = null;
         try {
             st = connection.createStatement();
-            rs = st.executeQuery(storage.equals("SQLite") ? "SELECT name FROM sqlite_master WHERE type=\'table\'" : "show tables");
+            rs = st.executeQuery(storage.equals("SQLite") ? "SELECT name FROM sqlite_master WHERE type='table'" : "show tables");
             if(!rs.next()){
                 st.executeUpdate("create table locato(" +
                         "    place_id varchar(30) not null," +
