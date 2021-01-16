@@ -30,16 +30,6 @@ public class Locato extends JavaPlugin {
         debug = fc.getBoolean("use_debug");
         storage = Objects.requireNonNull(fc.getString("storage_type")).toLowerCase();
 
-        if(storage.equals("SQLite")){
-            File yourFile = new File(getDataFolder()+"locato.db");
-            try {
-                boolean newfile = yourFile.createNewFile();
-                if(debug && newfile) System.out.println(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" New file locato.db created");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         //Database connect
         try{
             connection = SqlCon.openConnection();
@@ -55,7 +45,7 @@ public class Locato extends JavaPlugin {
         ResultSet rss = null;
         try {
             st = connection.createStatement();
-            rs = st.executeQuery("show tables");
+            rs = st.executeQuery(storage.equals("SQLite") ? "SELECT name FROM sqlite_master WHERE type=\'table\'" : "show tables");
             if(!rs.next()){
                 st.executeUpdate("create table locato(" +
                         "    place_id varchar(30) not null," +
