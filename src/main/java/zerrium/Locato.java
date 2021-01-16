@@ -116,17 +116,17 @@ public class Locato extends JavaPlugin {
         if(command.getName().equals("locato")) {
             if(args.length == 1)
                 return Arrays.asList("add", "edit", "remove", "search", "status");
-            if(args.length > 1 && args[0].equals("add") || args[0].equals("search") )
+            if(args.length == 2 && args[0].equals("add") || args[0].equals("search") )
                 return Arrays.asList();
-            if(args.length > 1 && (args[0].equals("edit") || args[0].equals("remove") || args[0].equals("status")))
+            if(args.length == 2 && (args[0].equals("edit") || args[0].equals("remove") || args[0].equals("status")))
                 return locations;
         }
-        if(command.getName().equals("whereis")) {
+        if(args.length < 2 && command.getName().equals("whereis")) {
             return locations;
         }
-        if(command.getName().equals("shareloc")) {
+        if(args.length < 2 && command.getName().equals("shareloc")) {
             return null;
         }
-        return null;
+        return Arrays.asList();
     }
 }
