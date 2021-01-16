@@ -8,6 +8,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
+
 public class ShareLoc implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -16,7 +18,7 @@ public class ShareLoc implements CommandExecutor {
             Location l = p.getLocation();
             final String a = ChatColor.GOLD+"[Locato] " + ChatColor.RESET + p.getDisplayName() + " shared his current location";
             final String b = ChatColor.GOLD+"[Locato] " + ChatColor.RESET + p.getDisplayName() + " is at ";
-            final String c = l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ() + " in " + l.getWorld().getEnvironment().toString().toLowerCase().replaceAll("_", " ") + " dimension.";
+            final String c = l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ() + " in " + Objects.requireNonNull(l.getWorld()).getEnvironment().toString().toLowerCase().replaceAll("_", " ") + " dimension.";
             if(args.length == 0){
                 Bukkit.broadcastMessage(a + ".");
                 Bukkit.broadcastMessage(b + c);

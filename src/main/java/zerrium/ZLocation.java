@@ -47,10 +47,6 @@ public class ZLocation {
         return dimension;
     }
 
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
-    }
-
     public String getPlaceId() {
         return place_id;
     }
@@ -59,15 +55,7 @@ public class ZLocation {
         return chunk1;
     }
 
-    public void setChunk1(ZChunk chunk1) {
-        this.chunk1 = chunk1;
-    }
-
     public ZChunk getChunk2() {
         return chunk2;
-    }
-
-    public void setChunk2(ZChunk chunk2) {
-        this.chunk2 = chunk2;
     }
 }

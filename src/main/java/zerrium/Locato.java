@@ -26,7 +26,7 @@ public class Locato extends JavaPlugin {
         this.saveDefaultConfig(); //get config file
         fc = this.getConfig();
         debug = fc.getBoolean("use_debug");
-        storage = fc.getString("storage_type").toLowerCase();
+        storage = Objects.requireNonNull(fc.getString("storage_type")).toLowerCase();
 
         //Database connect
         try{

@@ -11,6 +11,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import zerrium.Locato;
 import zerrium.ZLocation;
 
+import java.util.Objects;
+
 public class Whereis implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -29,6 +31,7 @@ public class Whereis implements CommandExecutor {
                         int[] chunk1 = zl.getChunk1().getCoord();
                         int[] chunk2 = zl.getChunk2().getCoord();
                         World w = Bukkit.getWorld(zl.getDimension());
+                        assert w != null;
                         Location block1 = w.getChunkAt(chunk1[0], chunk1[1]).getBlock(0, chunk1[2], 0).getLocation();
                         Location block2 = w.getChunkAt(chunk2[0], chunk2[1]).getBlock(15, chunk2[2], 15).getLocation();
                         Location loc = new Location(w,
@@ -37,7 +40,7 @@ public class Whereis implements CommandExecutor {
                                 Math.round((block1.getZ()+block2.getZ())/2));
                         sender.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + zl.getPlaceId() + " is located at: " +
                                 loc.getX() + ", " + loc.getY() + ", " + loc.getZ() + " in " +
-                                loc.getWorld().getEnvironment().toString().toLowerCase().replaceAll("_", " ") + " dimension.");
+                                Objects.requireNonNull(loc.getWorld()).getEnvironment().toString().toLowerCase().replaceAll("_", " ") + " dimension.");
                     }
                 }
             };

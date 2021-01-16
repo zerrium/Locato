@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Locato implements CommandExecutor {
     private CommandSender cs;
@@ -112,10 +113,12 @@ public class Locato implements CommandExecutor {
 
                     for(int i=Math.min(chunk1[0], chunk2[0]); i<=Math.max(chunk1[0], chunk2[0]); i++){
                         for(int j=Math.min(chunk1[1], chunk2[1]); j<=Math.max(chunk1[1], chunk2[1]); j++){
+                            assert w != null;
                             Chunk c = w.getChunkAt(i, j);
                             for(Entity e:c.getEntities()){
                                 if(e.getType() == EntityType.PLAYER){
                                     Player temp = Bukkit.getPlayer(e.getUniqueId());
+                                    assert temp != null;
                                     int y = (int) temp.getLocation().getY();
                                     if(zerrium.Locato.debug) System.out.println("Found a player with uuid of " + temp.getUniqueId() + ", name: " + temp.getDisplayName());
                                     if((Math.min(chunk1[2], chunk2[2])-2) <= y && (Math.max(chunk1[2], chunk2[2])+2) >= y) p.add(temp);
@@ -184,7 +187,7 @@ public class Locato implements CommandExecutor {
                 }else{
                     Location lo1 = hm.get(place);
                     Location lo2 = ((Player) cs).getLocation();
-                    SQL_add_edit("add", place, lo1.getWorld().getEnvironment().toString(), (int) lo1.getX(), (int) lo1.getZ(), (int) lo1.getY(), (int) lo2.getX(), (int) lo2.getZ(), (int) lo2.getY());
+                    SQL_add_edit("add", place, Objects.requireNonNull(lo1.getWorld()).getEnvironment().toString(), (int) lo1.getX(), (int) lo1.getZ(), (int) lo1.getY(), (int) lo2.getX(), (int) lo2.getZ(), (int) lo2.getY());
                 }
             }
         };
