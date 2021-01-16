@@ -24,8 +24,11 @@ public class Locato extends JavaPlugin {
     public void onEnable() {
         System.out.println(ChatColor.YELLOW+"[Locato] v1.0 by zerrium");
         Objects.requireNonNull(this.getCommand("locato")).setExecutor(new zerrium.Commands.Locato());
+        Objects.requireNonNull(getCommand("locato")).setTabCompleter(this);
         Objects.requireNonNull(this.getCommand("whereis")).setExecutor(new zerrium.Commands.Whereis());
+        Objects.requireNonNull(getCommand("whereis")).setTabCompleter(this);
         Objects.requireNonNull(this.getCommand("shareloc")).setExecutor(new zerrium.Commands.ShareLoc());
+        Objects.requireNonNull(getCommand("shareloc")).setTabCompleter(this);
         System.out.println(ChatColor.YELLOW+"[Locato] Connecting to database...");
         this.saveDefaultConfig(); //get config file
         fc = this.getConfig();
@@ -114,7 +117,7 @@ public class Locato extends JavaPlugin {
             if(args.length == 1)
                 return Arrays.asList("add", "edit", "remove", "search", "status");
             if(args.length > 1 && args[0].equals("add") || args[0].equals("search") )
-                return Arrays.asList("");
+                return Arrays.asList();
             if(args.length > 1 && (args[0].equals("edit") || args[0].equals("remove") || args[0].equals("status")))
                 return locations;
         }
