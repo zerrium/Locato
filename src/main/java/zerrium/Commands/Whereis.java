@@ -40,7 +40,7 @@ public class Whereis implements CommandExecutor {
                                 Math.round((block1.getZ()+block2.getZ())/2));
                         sender.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + zl.getPlaceId() + " is located at: " +
                                 loc.getX() + ", " + loc.getY() + ", " + loc.getZ() + " in " +
-                                Objects.requireNonNull(loc.getWorld()).getEnvironment().toString().toLowerCase().replaceAll("_", " ") + " dimension.");
+                                Objects.requireNonNull(loc.getWorld()).getEnvironment().toString().toLowerCase().replaceAll("_", " ") + ".");
                     }
                 }
             };

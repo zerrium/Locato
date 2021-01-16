@@ -187,8 +187,8 @@ public class Locato implements CommandExecutor {
                 }else{
                     Location lo1 = hm.get(place);
                     Location lo2 = ((Player) cs).getLocation();
-                    if(Objects.requireNonNull(lo1.getWorld()).getName().equals(Objects.requireNonNull(lo2.getWorld()).getName())){
-                        cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "The location must be on the same dimension!");
+                    if(!Objects.requireNonNull(lo1.getWorld()).getName().equals(Objects.requireNonNull(lo2.getWorld()).getName())){
+                        cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "The location must be on the same world!");
                         return;
                     }
                     SQL_add_edit("add", place, Objects.requireNonNull(lo1.getWorld()).getName(), lo1.getChunk().getX(), lo1.getChunk().getZ(), (int) lo1.getY(), lo2.getChunk().getX(), lo2.getChunk().getZ(), (int) lo2.getY());
