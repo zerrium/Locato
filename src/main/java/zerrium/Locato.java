@@ -2,11 +2,15 @@ package zerrium;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Locato extends JavaPlugin {
@@ -99,4 +103,27 @@ public class Locato extends JavaPlugin {
         System.out.println(ChatColor.YELLOW+"[Locato] Disabling plugin...");
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        ArrayList<String> locations = new ArrayList<String>();
+        for (ZLocation location: zLocations) {
+            locations.add(location.getPlaceId());
+        }
+
+        if(command.getName().equals("locato")) {
+            if(args.length == 1)
+                return Arrays.asList("add", "edit", "remove", "search", "status");
+            if(args.length > 1 && args[0].equals("add") || args[0].equals("search") )
+                return Arrays.asList("");
+            if(args.length > 1 && (args[0].equals("edit") || args[0].equals("remove") || args[0].equals("status")))
+                return locations;
+        }
+        if(command.getName().equals("whereis")) {
+            return locations;
+        }
+        if(command.getName().equals("shareloc")) {
+            return null;
+        }
+        return null;
+    }
 }
