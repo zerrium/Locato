@@ -8,6 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import zerrium.Locato;
 import zerrium.LocatoSqlCon;
 import zerrium.LocatoZChunk;
 import zerrium.LocatoZLocation;
@@ -219,7 +220,23 @@ public class LocatoCommand implements CommandExecutor {
                     return;
                 }
                 String place = args[1].toLowerCase();
-                String dimension = args[8];
+                String dimension = args[8].toLowerCase();
+                boolean place_exists = zerrium.Locato.zLocations.contains(new LocatoZLocation(place));
+                if(place.equals("<place_name>")){
+                    cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Invalid place name.");
+                    return;
+                }
+                if(add_edit.equals("add") && place_exists){
+                    cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Place of \"" + place + "\" is already recorded on database. Try again using another name!");
+                    return;
+                }else if(add_edit.equals("edit") && !place_exists){
+                    cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Place of \"" + place + "\" is not on database. Try again using add command!");
+                    return;
+                }
+                if(!Locato.worlds.contains(dimension)){
+                    cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Invalid world or dimension name.");
+                    return;
+                }
                 if(add_edit.equals("add") && !cs.hasPermission("locato.add")){
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + no_perm);
                     return;
