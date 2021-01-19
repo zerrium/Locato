@@ -123,7 +123,7 @@ public class Locato extends JavaPlugin {
 
         switch (command.getName()){
             case "locato":
-                locatoTabComplete(args, locations);
+                return locatoTabComplete(args, locations);
             case "whereis":
                 if(args.length < 2) return locations;
                 else return Collections.emptyList();
@@ -153,9 +153,8 @@ public class Locato extends JavaPlugin {
                         return Collections.emptyList();
                 }
             default:
-                locatoAddEditTabComplete(args);
+                return locatoAddEditTabComplete(args);
         }
-        return Collections.emptyList();
     }
 
     private List<String> locatoAddEditTabComplete(String[] args){
