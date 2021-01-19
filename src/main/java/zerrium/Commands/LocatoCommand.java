@@ -28,7 +28,7 @@ public class LocatoCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         cs = sender;
         final String msg = ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "usage:\n" +
-                "/locato <remove/status> <place_name>\n" +
+                "/locato <delete/remove/status> <place_name>\n" +
                 "/locato <add/edit> <place_name> (optional for add and player: <chunk1 pos x> <chunk1 pos y> <chunk1 pos z> <chunk2 pos x> <chunk2 pos y> <chunk2 pos z> <dimension: world or world_nether or world_the_end>)\n" +
                 "/locato <search> <keyword>\n";
         switch(args.length){
@@ -37,6 +37,7 @@ public class LocatoCommand implements CommandExecutor {
                     case "add":
                         doAdd(args[1].toLowerCase());
                         return true;
+                    case "delete":
                     case "remove":
                         doRemove(args[1].toLowerCase());
                         return true;
@@ -149,7 +150,7 @@ public class LocatoCommand implements CommandExecutor {
         BukkitRunnable r = new BukkitRunnable() { //asynchronous because it might disturb main thread performance if the player is doing enormous search
             @Override
             public void run() {
-                if(!cs.hasPermission("locato.delete")){
+                if(!cs.hasPermission("locato.delete") || !cs.hasPermission("locato.remove")){
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + no_perm);
                     return;
                 }
@@ -217,7 +218,7 @@ public class LocatoCommand implements CommandExecutor {
                     if(zerrium.Locato.debug) e.printStackTrace();
                     return;
                 }
-                String place = args[1];
+                String place = args[1].toLowerCase();
                 String dimension = args[8];
                 if(add_edit.equals("add") && !cs.hasPermission("locato.add")){
                     cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + no_perm);
