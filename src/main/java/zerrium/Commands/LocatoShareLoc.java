@@ -18,7 +18,7 @@ public class LocatoShareLoc implements CommandExecutor {
             Location l = p.getLocation();
             final String a = ChatColor.GOLD+"[Locato] " + ChatColor.RESET + p.getDisplayName() + " shared his current location";
             final String b = ChatColor.GOLD+"[Locato] " + ChatColor.RESET + p.getDisplayName() + " is at ";
-            final String c = l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ() + " in " + Objects.requireNonNull(l.getWorld()).getEnvironment().toString().toLowerCase().replaceAll("_", " ") + ".";
+            final String c = l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ() + " in " + Objects.requireNonNull(l.getWorld()).getName() + ".";
             if(args.length == 0){
                 Bukkit.broadcastMessage(a + ".");
                 Bukkit.broadcastMessage(b + c);
