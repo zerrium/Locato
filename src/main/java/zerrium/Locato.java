@@ -123,44 +123,7 @@ public class Locato extends JavaPlugin {
 
         switch (command.getName()){
             case "locato":
-                switch(args.length){
-                    case 1:
-                        return Arrays.asList("add", "edit", "remove", "search", "status");
-                    case 2:
-                        switch(args[0]){
-                            case "add":
-                                return Collections.singletonList("<place_name>");
-                            case "search":
-                            case "edit":
-                            case "remove":
-                            case "delete":
-                            case "status":
-                                return locations;
-                            default:
-                                return Collections.emptyList();
-                        }
-                    default:
-                        if(args[0].equals("edit") || args[0].equals("add")){
-                            switch (args.length){
-                                case 3:
-                                    return Collections.singletonList("<chunk1_x>");
-                                case 4:
-                                    return Collections.singletonList("<chunk1_y>");
-                                case 5:
-                                    return Collections.singletonList("<chunk1_z>");
-                                case 6:
-                                    return Collections.singletonList("<chunk2_x>");
-                                case 7:
-                                    return Collections.singletonList("<chunk2_y>");
-                                case 8:
-                                    return Collections.singletonList("<chunk2_z>");
-                                case 9:
-                                    return worlds;
-                                default:
-                                    return Collections.emptyList();
-                            }
-                        }else return Collections.emptyList();
-                }
+                locatoTabComplete(args, locations);
             case "whereis":
                 if(args.length < 2) return locations;
                 else return Collections.emptyList();
@@ -170,5 +133,51 @@ public class Locato extends JavaPlugin {
             default:
                 return Collections.emptyList();
         }
+    }
+
+    private List<String> locatoTabComplete(String[] args, ArrayList<String> locations){
+        switch(args.length){
+            case 1:
+                return Arrays.asList("add", "edit", "remove", "search", "status");
+            case 2:
+                switch(args[0]){
+                    case "add":
+                        return Collections.singletonList("<place_name>");
+                    case "search":
+                    case "edit":
+                    case "remove":
+                    case "delete":
+                    case "status":
+                        return locations;
+                    default:
+                        return Collections.emptyList();
+                }
+            default:
+                locatoAddEditTabComplete(args);
+        }
+        return Collections.emptyList();
+    }
+
+    private List<String> locatoAddEditTabComplete(String[] args){
+        if(args[0].equals("edit") || args[0].equals("add")){
+            switch (args.length){
+                case 3:
+                    return Collections.singletonList("<chunk1_x>");
+                case 4:
+                    return Collections.singletonList("<chunk1_y>");
+                case 5:
+                    return Collections.singletonList("<chunk1_z>");
+                case 6:
+                    return Collections.singletonList("<chunk2_x>");
+                case 7:
+                    return Collections.singletonList("<chunk2_y>");
+                case 8:
+                    return Collections.singletonList("<chunk2_z>");
+                case 9:
+                    return worlds;
+                default:
+                    return Collections.emptyList();
+            }
+        }else return Collections.emptyList();
     }
 }
