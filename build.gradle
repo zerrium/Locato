@@ -14,7 +14,7 @@ repositories {
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
     implementation 'org.xerial:sqlite-jdbc:3.34.0'
-    implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.4.5'
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.3'
 }
 
 test {

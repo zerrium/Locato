@@ -5,7 +5,7 @@
 
 ## Compiled with:
 [![SpigotAPI](https://img.shields.io/badge/SpigotAPI-1.16.5-yellow?style=for-the-badge)](https://hub.spigotmc.org/javadocs/bukkit) <br>
-[![HikariCP](https://img.shields.io/badge/HikariCP-3.4.5-yellow?style=for-the-badge)](https://github.com/brettwooldridge/HikariCP) <br>
+[![HikariCP](https://img.shields.io/badge/HikariCP-4.0.3-yellow?style=for-the-badge)](https://github.com/brettwooldridge/HikariCP) <br>
 [![SQLite](https://img.shields.io/badge/SQLite-3.34.0-yellow?style=for-the-badge)](https://github.com/sqlite/sqlite) <br>
 
 
