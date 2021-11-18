@@ -22,7 +22,7 @@ public class Locato extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println(ChatColor.YELLOW+"[Locato] v1.2 by zerrium");
+        System.out.println(ChatColor.YELLOW+"[Locato] v2.0 by zerrium");
         Objects.requireNonNull(this.getCommand("locato")).setExecutor(new LocatoCommand());
         Objects.requireNonNull(getCommand("locato")).setTabCompleter(this);
         Objects.requireNonNull(this.getCommand("whereis")).setExecutor(new LocatoWhereis());
