@@ -9,8 +9,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 import zerrium.Locato;
-import zerrium.LocatoZLocation;
+import zerrium.Models.LocatoZLocation;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class LocatoWhereis implements CommandExecutor {
@@ -23,11 +24,12 @@ public class LocatoWhereis implements CommandExecutor {
             BukkitRunnable r = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    int index = Locato.zLocations.indexOf(new LocatoZLocation(args[0].toLowerCase()));
+                    final ArrayList<LocatoZLocation> zLocations = Locato.getzLocations();
+                    int index = zLocations.indexOf(new LocatoZLocation(args[0].toLowerCase()));
                     if(index == -1){
                         sender.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + args[0] + " is not found on the server record.");
                     }else{
-                        LocatoZLocation zl = Locato.zLocations.get(index);
+                        LocatoZLocation zl = zLocations.get(index);
                         int[] chunk1 = zl.getChunk1().getCoord();
                         int[] chunk2 = zl.getChunk2().getCoord();
                         World w = Bukkit.getWorld(zl.getDimension());

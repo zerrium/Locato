@@ -1,4 +1,4 @@
-package zerrium;
+package zerrium.Models;
 
 public class LocatoZChunk {
     private final int x, z, elevation;
