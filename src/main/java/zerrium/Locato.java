@@ -15,21 +15,26 @@ import zerrium.Utils.LocatoSqlUtils;
 
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Locato extends JavaPlugin {
     private static ArrayList<LocatoZLocation> zLocations;
     private static ArrayList<String> worlds;
+    private Logger log;
 
     @Override
     public void onEnable() {
-        System.out.println(ChatColor.YELLOW+"[Locato] v2.0 by zerrium");
+        log = getLogger();
+        log.setLevel(Level.INFO);
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" v2.0 by zerrium");
         Objects.requireNonNull(this.getCommand("locato")).setExecutor(new LocatoCommand());
         Objects.requireNonNull(getCommand("locato")).setTabCompleter(this);
         Objects.requireNonNull(this.getCommand("whereis")).setExecutor(new LocatoWhereis());
         Objects.requireNonNull(getCommand("whereis")).setTabCompleter(this);
         Objects.requireNonNull(this.getCommand("shareloc")).setExecutor(new LocatoShareLoc());
         Objects.requireNonNull(getCommand("shareloc")).setTabCompleter(this);
-        System.out.println(ChatColor.YELLOW+"[Locato] Connecting to database...");
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Connecting to database...");
 
         this.saveDefaultConfig(); //get config file
         new LocatoConfigs();
@@ -41,7 +46,7 @@ public class Locato extends JavaPlugin {
         try{
             connection = LocatoSqlUtils.openConnection();
         } catch (SQLException throwables) {
-            System.out.println(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" Unable to connect to database:");
+            log.severe(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" Unable to connect to database:");
             throwables.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(this);
         }
@@ -54,13 +59,13 @@ public class Locato extends JavaPlugin {
             worlds.add(w.getName().toLowerCase());
         }
 
-        System.out.println(ChatColor.YELLOW+"[Locato] Done.");
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Done.");
     }
 
     @Override
     public void onDisable() {
         LocatoSqlUtils.closeConnection();
-        System.out.println(ChatColor.YELLOW+"[Locato] Disabling plugin...");
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Disabling plugin...");
     }
 
     @Override

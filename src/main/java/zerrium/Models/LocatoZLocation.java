@@ -1,11 +1,15 @@
 package zerrium.Models;
 
-import zerrium.Utils.LocatoConfigs;
+import zerrium.Locato;
+
+import java.util.logging.Logger;
 
 public class LocatoZLocation {
     private final String place_id;
     private String dimension;
     private LocatoZChunk chunk1, chunk2;
+
+    private final static Logger log = Locato.getPlugin(Locato.class).getLogger();
 
     public LocatoZLocation(String place_id, String dimension, LocatoZChunk chunk1, LocatoZChunk chunk2){
         this.place_id = place_id;
@@ -20,23 +24,22 @@ public class LocatoZLocation {
 
     @Override
     public boolean equals (Object o) {
-        final boolean debug = LocatoConfigs.getDebug();
         // If the object is compared with itself then return true
         if (o == this) {
-            if(debug) System.out.println("Comparing instance of itself");
+            log.fine("[Locato: "+this.getClass().toString()+"] "+"Comparing instance of itself");
             return true;
         }
 
         /* Check if o is an instance of ZPlayer or not
           "null instanceof [type]" also returns false */
         if (!(o instanceof LocatoZLocation)) {
-            if(debug) System.out.println("Not a ZLocation instance");
+            log.fine("[Locato: "+this.getClass().toString()+"] "+"Not a ZLocation instance");
             return false;
         }
 
         // Compare the data members and return accordingly
         boolean result = ((LocatoZLocation) o).place_id.equals(place_id) || place_id.equals(((LocatoZLocation) o).place_id);
-        if(debug) System.out.println("ZLocation instance, equal? "+result);
+        log.fine("[Locato: "+this.getClass().toString()+"] "+"ZLocation instance, equal? "+result);
         return result;
     }
 

@@ -20,10 +20,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class LocatoCommand implements CommandExecutor {
     private CommandSender cs;
     private final HashMap<String, Location> hm = new HashMap<>();
+    private final Logger log = Locato.getPlugin(Locato.class).getLogger();
     private static final String no_perm = "[Locato] " + ChatColor.RESET + "Sorry you do not have permission to perform this command. Ask your admin for more info.";
 
     @Override
@@ -124,7 +126,7 @@ public class LocatoCommand implements CommandExecutor {
                                     Player temp = Bukkit.getPlayer(e.getUniqueId());
                                     assert temp != null;
                                     int y = (int) temp.getLocation().getY();
-                                    if(LocatoConfigs.getDebug()) System.out.println("Found a player with uuid of " + temp.getUniqueId() + ", name: " + temp.getDisplayName());
+                                    log.fine("[Locato: "+this.getClass().toString()+"] "+"Found a player with uuid of " + temp.getUniqueId() + ", name: " + temp.getDisplayName());
                                     if((Math.min(chunk1[2], chunk2[2])-2) <= y && (Math.max(chunk1[2], chunk2[2])+2) >= y) p.add(temp);
                                 }
                             }
@@ -253,7 +255,7 @@ public class LocatoCommand implements CommandExecutor {
     }
 
     private void SQL_add_edit(String add_edit, String place, String dimension, int chunk1_x, int chunk1_z, int elevation1, int chunk2_x, int chunk2_z, int elevation2){
-        System.out.println(ChatColor.YELLOW + "[Locato]" + ChatColor.RESET + (add_edit.equals("add") ? " Adding" : " Editing") +" place: " + place + " to database...");
+        log.info(ChatColor.YELLOW + "[Locato]" + ChatColor.RESET + (add_edit.equals("add") ? " Adding" : " Editing") +" place: " + place + " to database...");
         PreparedStatement pss = null;
         Connection con = null;
         try {
@@ -278,7 +280,7 @@ public class LocatoCommand implements CommandExecutor {
             }
             zLocations.add(new LocatoZLocation(place, dimension, new LocatoZChunk(chunk1_x, chunk1_z, elevation1), new LocatoZChunk(chunk2_x, chunk2_z, elevation2)));
             final String m = "[Locato] " + ChatColor.RESET + (add_edit.equals("add") ? "Added" : "Edited") + " place: \"" + place + "\" to database record.";
-            System.out.println(ChatColor.YELLOW + m);
+            log.info(ChatColor.YELLOW + m);
             cs.sendMessage(ChatColor.GOLD + m);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -295,7 +297,7 @@ public class LocatoCommand implements CommandExecutor {
     }
 
     private void SQL_delete(String place, int index){
-        System.out.println(ChatColor.YELLOW + "[Locato]" + ChatColor.RESET + " Deleting place: " + place + " from database...");
+        log.info(ChatColor.YELLOW + "[Locato]" + ChatColor.RESET + " Deleting place: " + place + " from database...");
         PreparedStatement pss = null;
         Connection con = null;
         try {
@@ -303,12 +305,12 @@ public class LocatoCommand implements CommandExecutor {
             pss = con.prepareStatement("delete from locato where place_id=?");
             pss.setString(1, place);
             int row = pss.executeUpdate();
-            System.out.println(ChatColor.YELLOW + "[Locato]" + ChatColor.RESET +
+            log.info(ChatColor.YELLOW + "[Locato]" + ChatColor.RESET +
                     (row > 0 ? " Deleted place: " + place + " from database." : " No place of " + place + " found on the database. No rows affected."));
            Locato.getzLocations().remove(index);
             final String m = "[Locato] " + ChatColor.RESET + "Deleted place: \"" + place + "\" from database record.";
             cs.sendMessage(ChatColor.GOLD + m);
-            System.out.println(ChatColor.YELLOW + m);
+            log.info(ChatColor.YELLOW + m);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             cs.sendMessage(ChatColor.GOLD+"[Locato] " + ChatColor.RESET + "Failed to delete place: \"" + place + "\" from database record. Check server console for more info.");

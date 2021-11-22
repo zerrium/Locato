@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class LocatoSqlUtils {
     private final static String hostname = LocatoConfigs.getStringConfig(LocatoConfig.DB_HOST);
@@ -24,6 +25,7 @@ public class LocatoSqlUtils {
     private final static boolean useSSL = LocatoConfigs.getBooleanConfig(LocatoConfig.DB_SSL);
     private final static HikariConfig config = new HikariConfig();
     private final static HikariDataSource ds;
+    private final static Logger log = Locato.getPlugin(Locato.class).getLogger();
 
     static {
         config.addDataSourceProperty( "cachePrepStmts" , "true" );
@@ -51,7 +53,7 @@ public class LocatoSqlUtils {
                 break;
 
             default:
-                System.out.println(ChatColor.YELLOW+"[Locato] Wrong database configuration! Check \"storage_type\" in config.yml");
+                log.severe(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" Wrong database configuration! Check \"storage_type\" in config.yml");
                 Bukkit.getPluginManager().disablePlugin(Locato.getPlugin(Locato.class));
         }
         ds = new HikariDataSource( config );
@@ -68,7 +70,6 @@ public class LocatoSqlUtils {
     }
 
     public static void initSQL(Connection connection, ArrayList<LocatoZLocation> zLocations){
-        final boolean debug = LocatoConfigs.getDebug();
         final String storage = LocatoConfigs.getStringConfig(LocatoConfig.STORAGE_TYPE);
 
         Statement st = null;
@@ -90,21 +91,19 @@ public class LocatoSqlUtils {
                         "    primary key(place_id));");
             }
             rss = st.executeQuery("select * from locato;");
-            System.out.println(ChatColor.YELLOW+"[Locato] Getting places list from database...");
+            log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Getting places list from database...");
             int c = 0;
             while(rss.next()){
                 zLocations.add(new LocatoZLocation(rss.getString("place_id"), rss.getString("dimension"),
                         new LocatoZChunk(rss.getInt("chunk1_x"), rss.getInt("chunk1_z"), rss.getInt("elevation1")),
                         new LocatoZChunk(rss.getInt("chunk2_x"), rss.getInt("chunk2_z"), rss.getInt("elevation2"))));
-                if(debug){
-                    System.out.println(zLocations.get(c).getPlaceId());
-                }
+                log.fine("[Zstats: "+LocatoSqlUtils.class.toString()+"] "+zLocations.get(c).getPlaceId());
                 c++;
             }
-            System.out.println(ChatColor.YELLOW+"[Locato] Found "+ c +" place records on database.");
+            log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Found "+ c +" place records on database.");
 
         } catch (SQLException throwables) {
-            System.out.println(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" An SQL error occured:");
+            log.severe(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" An SQL error occured:");
             throwables.printStackTrace();
         } finally {
             try {
@@ -119,7 +118,7 @@ public class LocatoSqlUtils {
 
                 connection.close();
             } catch (Exception e) {
-                if(debug) System.out.println("[Locato] "+ e );
+                log.fine("[Zstats: "+LocatoSqlUtils.class.toString()+"] "+ e );
             }
         }
     }

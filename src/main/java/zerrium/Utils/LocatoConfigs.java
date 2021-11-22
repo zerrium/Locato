@@ -6,6 +6,8 @@ import zerrium.Locato;
 import zerrium.Models.LocatoConfig;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LocatoConfigs {
     private static FileConfiguration fc;
@@ -14,6 +16,7 @@ public class LocatoConfigs {
     private static HashMap<LocatoConfig, String> stringConfigs;
 
     private static boolean debug;
+    private final Logger log = Locato.getPlugin(Locato.class).getLogger();
 
     public static boolean getBooleanConfig(LocatoConfig config) {
         return booleanConfigs.get(config);
@@ -34,11 +37,12 @@ public class LocatoConfigs {
     public LocatoConfigs() {
         fc = Locato.getPlugin(Locato.class).getConfig();
         debug = fc.getBoolean(LocatoConfig.DEBUG.getConfig());
+        if(debug) log.setLevel(Level.FINE);
         this.readConfig();
     }
 
     private synchronized void readConfig(){
-        System.out.println(ChatColor.YELLOW+"[Locato] Reading config file...");
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Reading config file...");
 
         booleanConfigs = new HashMap<>();
         intConfigs = new HashMap<>();
@@ -57,6 +61,6 @@ public class LocatoConfigs {
         }
 
         debug = getBooleanConfig(LocatoConfig.DEBUG);
-        System.out.println(ChatColor.YELLOW+"[Locato] Done.");
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Done.");
     }
 }
