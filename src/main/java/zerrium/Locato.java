@@ -28,19 +28,20 @@ public class Locato extends JavaPlugin {
         log = getLogger();
         log.setLevel(Level.INFO);
         log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" v2.0 by zerrium");
-        Objects.requireNonNull(this.getCommand("locato")).setExecutor(new LocatoCommand());
-        Objects.requireNonNull(getCommand("locato")).setTabCompleter(this);
-        Objects.requireNonNull(this.getCommand("whereis")).setExecutor(new LocatoWhereis());
-        Objects.requireNonNull(getCommand("whereis")).setTabCompleter(this);
-        Objects.requireNonNull(this.getCommand("shareloc")).setExecutor(new LocatoShareLoc());
-        Objects.requireNonNull(getCommand("shareloc")).setTabCompleter(this);
-        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Connecting to database...");
 
         this.saveDefaultConfig(); //get config file
         new LocatoConfigs();
         zLocations = new ArrayList<>();
         worlds = new ArrayList<>();
 
+        Objects.requireNonNull(this.getCommand("locato")).setExecutor(new LocatoCommand());
+        Objects.requireNonNull(getCommand("locato")).setTabCompleter(this);
+        Objects.requireNonNull(this.getCommand("whereis")).setExecutor(new LocatoWhereis());
+        Objects.requireNonNull(getCommand("whereis")).setTabCompleter(this);
+        Objects.requireNonNull(this.getCommand("shareloc")).setExecutor(new LocatoShareLoc());
+        Objects.requireNonNull(getCommand("shareloc")).setTabCompleter(this);
+
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Connecting to database...");
         //Database connect
         Connection connection = null;
         try{
