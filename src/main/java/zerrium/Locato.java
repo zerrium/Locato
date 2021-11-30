@@ -5,113 +5,68 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import zerrium.Commands.LocatoCommand;
 import zerrium.Commands.LocatoShareLoc;
 import zerrium.Commands.LocatoWhereis;
+import zerrium.Models.LocatoZLocation;
+import zerrium.Utils.LocatoConfigs;
+import zerrium.Utils.LocatoSqlUtils;
 
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Locato extends JavaPlugin {
-    private Connection connection;
-    static FileConfiguration fc;
-    public static Boolean debug;
-    public static String storage;
-    public static ArrayList<LocatoZLocation> zLocations;
-    public static ArrayList<String> worlds;
+    private static ArrayList<LocatoZLocation> zLocations;
+    private static ArrayList<String> worlds;
+    private Logger log;
 
     @Override
     public void onEnable() {
-        System.out.println(ChatColor.YELLOW+"[Locato] v1.2 by zerrium");
+        log = getLogger();
+        log.setLevel(Level.INFO);
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" v2.0 by zerrium");
+
+        this.saveDefaultConfig(); //get config file
+        new LocatoConfigs();
+        zLocations = new ArrayList<>();
+        worlds = new ArrayList<>();
+
         Objects.requireNonNull(this.getCommand("locato")).setExecutor(new LocatoCommand());
         Objects.requireNonNull(getCommand("locato")).setTabCompleter(this);
         Objects.requireNonNull(this.getCommand("whereis")).setExecutor(new LocatoWhereis());
         Objects.requireNonNull(getCommand("whereis")).setTabCompleter(this);
         Objects.requireNonNull(this.getCommand("shareloc")).setExecutor(new LocatoShareLoc());
         Objects.requireNonNull(getCommand("shareloc")).setTabCompleter(this);
-        System.out.println(ChatColor.YELLOW+"[Locato] Connecting to database...");
-        this.saveDefaultConfig(); //get config file
-        fc = this.getConfig();
-        debug = fc.getBoolean("use_debug");
-        storage = Objects.requireNonNull(fc.getString("storage_type")).toLowerCase();
-        zLocations = new ArrayList<>();
-        worlds = new ArrayList<>();
 
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Connecting to database...");
         //Database connect
+        Connection connection = null;
         try{
-            connection = LocatoSqlCon.openConnection();
+            connection = LocatoSqlUtils.openConnection();
         } catch (SQLException throwables) {
-            System.out.println(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" Unable to connect to database:");
+            log.severe(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" Unable to connect to database:");
             throwables.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
         //database query
-        Statement st = null;
-        ResultSet rs = null;
-        ResultSet rss = null;
-        try {
-            st = connection.createStatement();
-            rs = st.executeQuery(storage.equals("sqlite") ? "SELECT name FROM sqlite_master WHERE type='table'" : "show tables");
-            if(!rs.next()){
-                st.executeUpdate("create table locato(" +
-                        "    place_id varchar(30) not null," +
-                        "    dimension text not null," +
-                        "    chunk1_x int not null," +
-                        "    chunk1_z int not null," +
-                        "    elevation1 int not null," +
-                        "    chunk2_x int not null," +
-                        "    chunk2_z int not null," +
-                        "    elevation2 int not null," +
-                        "    primary key(place_id));");
-            }
-            rss = st.executeQuery("select * from locato;");
-            System.out.println(ChatColor.YELLOW+"[Locato] Getting places list from database...");
-            int c = 0;
-            while(rss.next()){
-                zLocations.add(new LocatoZLocation(rss.getString("place_id"), rss.getString("dimension"),
-                        new LocatoZChunk(rss.getInt("chunk1_x"), rss.getInt("chunk1_z"), rss.getInt("elevation1")),
-                        new LocatoZChunk(rss.getInt("chunk2_x"), rss.getInt("chunk2_z"), rss.getInt("elevation2"))));
-                if(debug){
-                    System.out.println(zLocations.get(c).getPlaceId());
-                }
-                c++;
-            }
-            System.out.println(ChatColor.YELLOW+"[Locato] Found "+ c +" place records on database.");
-
-        } catch (SQLException throwables) {
-            System.out.println(ChatColor.YELLOW+"[Locato]"+ChatColor.RED+" An SQL error occured:");
-            throwables.printStackTrace();
-        } finally {
-            try {
-                assert st != null;
-                st.close();
-
-                assert rs != null;
-                rs.close();
-
-                assert rss != null;
-                rss.close();
-
-                connection.close();
-            } catch (Exception e) {
-                if(debug) System.out.println("[Locato] "+ e );
-            }
-        }
+        assert connection != null;
+        LocatoSqlUtils.initSQL(connection, zLocations);
 
         for(World w:Bukkit.getWorlds()){
             worlds.add(w.getName().toLowerCase());
         }
 
-        System.out.println(ChatColor.YELLOW+"[Locato] Done.");
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Done.");
     }
 
     @Override
     public void onDisable() {
-        LocatoSqlCon.closeConnection();
-        System.out.println(ChatColor.YELLOW+"[Locato] Disabling plugin...");
+        LocatoSqlUtils.closeConnection();
+        log.info(ChatColor.YELLOW+"[Locato]"+ChatColor.RESET+" Disabling plugin...");
     }
 
     @Override
@@ -178,5 +133,13 @@ public class Locato extends JavaPlugin {
                     return Collections.emptyList();
             }
         }else return Collections.emptyList();
+    }
+
+    public static ArrayList<LocatoZLocation> getzLocations() {
+        return zLocations;
+    }
+
+    public static ArrayList<String> getWorlds() {
+        return worlds;
     }
 }
