@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 public class LocatoSqlUtils {
@@ -70,7 +71,7 @@ public class LocatoSqlUtils {
     }
 
     public static void initSQL(Connection connection, ArrayList<LocatoZLocation> zLocations){
-        final String storage = LocatoConfigs.getStringConfig(LocatoConfig.STORAGE_TYPE);
+        final String storage = LocatoConfigs.getStringConfig(LocatoConfig.STORAGE_TYPE).toLowerCase();
 
         Statement st = null;
         ResultSet rs = null;
